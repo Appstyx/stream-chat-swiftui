@@ -338,7 +338,7 @@ struct MultiImageView: View {
     }
 }
 
-struct LazyLoadingImage: View {
+public struct LazyLoadingImage: View {
     @Injected(\.utils) private var utils
 
     @State private var image: UIImage?
@@ -352,8 +352,28 @@ struct LazyLoadingImage: View {
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
     var onImageLoaded: (UIImage) -> Void = { _ in /* Default implementation. */ }
+    
+    public init(
+        source: MediaAttachment,
+        width: CGFloat,
+        height: CGFloat,
+        resize: Bool = true,
+        shouldSetFrame: Bool = true,
+        imageTapped: ((Int) -> Void)? = nil,
+        index: Int? = nil,
+        onImageLoaded: @escaping (UIImage) -> Void = { _ in }
+    ) {
+        self.source = source
+        self.width = width
+        self.height = height
+        self.resize = resize
+        self.shouldSetFrame = shouldSetFrame
+        self.imageTapped = imageTapped
+        self.index = index
+        self.onImageLoaded = onImageLoaded
+    }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             if let image = image {
                 imageView(for: image)
@@ -439,6 +459,16 @@ public struct MediaAttachment {
     let type: MediaAttachmentType
     var uploadingState: AttachmentUploadingState?
     
+    public init(
+        url: URL,
+        type: MediaAttachmentType,
+        uploadingState: AttachmentUploadingState? = nil
+    ) {
+        self.url = url
+        self.type = type
+        self.uploadingState = uploadingState
+    }
+    
     func generateThumbnail(
         resize: Bool,
         preferredSize: CGSize,
@@ -477,7 +507,7 @@ extension MediaAttachment {
     }
 }
 
-enum MediaAttachmentType {
+public enum MediaAttachmentType {
     case image
     case video
 }
