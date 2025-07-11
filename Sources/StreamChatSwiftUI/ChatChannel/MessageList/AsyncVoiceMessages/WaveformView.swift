@@ -144,7 +144,7 @@ public struct WaveformViewSwiftUI: UIViewRepresentable {
     var onSliderChanged: (TimeInterval) -> Void
     var onSliderTapped: () -> Void
     
-    func makeUIView(context: Context) -> WaveformView {
+    public func makeUIView(context: Context) -> WaveformView {
         let view = WaveformView()
         view.onSliderTapped = onSliderTapped
         view.onSliderChanged = onSliderChanged
@@ -152,7 +152,7 @@ public struct WaveformViewSwiftUI: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ uiView: WaveformView, context: Context) {
+    public func updateUIView(_ uiView: WaveformView, context: Context) {
         updateContent(for: uiView)
     }
     
