@@ -138,7 +138,7 @@ open class WaveformView: UIView {
     }
 }
 
-struct WaveformViewSwiftUI: UIViewRepresentable {
+public struct WaveformViewSwiftUI: UIViewRepresentable {
     var audioContext: AudioPlaybackContext?
     var addedVoiceRecording: AddedVoiceRecording
     var onSliderChanged: (TimeInterval) -> Void
