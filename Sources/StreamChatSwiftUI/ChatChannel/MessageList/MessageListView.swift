@@ -606,8 +606,8 @@ private struct MessageViewModelKey: EnvironmentKey {
     static let defaultValue: MessageViewModel? = nil
 }
 
-extension EnvironmentValues {
-    var channelTranslationLanguage: TranslationLanguage? {
+public extension EnvironmentValues {
+    public var channelTranslationLanguage: TranslationLanguage? {
         get {
             self[ChannelTranslationLanguageKey.self]
         }
