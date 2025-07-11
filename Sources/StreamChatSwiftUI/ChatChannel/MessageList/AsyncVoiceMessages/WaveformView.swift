@@ -144,6 +144,18 @@ public struct WaveformViewSwiftUI: UIViewRepresentable {
     var onSliderChanged: (TimeInterval) -> Void
     var onSliderTapped: () -> Void
     
+    public init(
+        audioContext: AudioPlaybackContext? = nil,
+        addedVoiceRecording: AddedVoiceRecording,
+        onSliderChanged: @escaping (TimeInterval) -> Void,
+        onSliderTapped: @escaping () -> Void
+    ) {
+        self.audioContext = audioContext
+        self.addedVoiceRecording = addedVoiceRecording
+        self.onSliderChanged = onSliderChanged
+        self.onSliderTapped = onSliderTapped
+    }
+    
     public func makeUIView(context: Context) -> WaveformView {
         let view = WaveformView()
         view.onSliderTapped = onSliderTapped
