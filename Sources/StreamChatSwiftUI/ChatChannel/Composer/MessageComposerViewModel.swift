@@ -106,8 +106,13 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
     
+    /// Flag to enable automatic sending of voice recordings when added.
+    public var shouldAutoSendVoiceRecord: Bool = false
+
     open func onAddVoiceRecording() {
-        // Default implementation does nothing
+        if shouldAutoSendVoiceRecord, !addedVoiceRecordings.isEmpty {
+            sendMessage(quotedMessage: quotedMessage?.wrappedValue, editedMessage: nil) {}
+        }
     }
 
     @Published public var addedCustomAttachments = [CustomAttachment]() {
