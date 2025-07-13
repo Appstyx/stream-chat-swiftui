@@ -101,7 +101,13 @@ open class MessageComposerViewModel: ObservableObject {
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
             }
+            
+            onAddVoiceRecording()
         }
+    }
+    
+    open func onAddVoiceRecording() {
+        // Default implementation does nothing
     }
 
     @Published public var addedCustomAttachments = [CustomAttachment]() {
