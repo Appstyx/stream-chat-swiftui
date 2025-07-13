@@ -570,6 +570,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     @objc private func handleHideTabBar() {
         hideTabBar = true
     }
+    
+    @Published var scrollToTopSignal: Int = 0
+    
+    public func scrollToTop() {
+        scrollToTopSignal += 1
+    }
 }
 
 internal let dismissChannel = "io.getstream.dismissChannel"

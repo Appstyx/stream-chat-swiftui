@@ -157,6 +157,9 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
     public var body: some View {
         LazyVStack(spacing: 0) {
+            EmptyView()
+                .id("ChatChannelListTop")
+            
             ForEach(channels) { channel in
                 factory.makeChannelListItem(
                     channel: channel,
