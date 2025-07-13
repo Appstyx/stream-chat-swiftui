@@ -112,7 +112,7 @@ open class MessageComposerViewModel: ObservableObject {
     open func onAddVoiceRecording() {
         if shouldAutoSendVoiceRecord, !addedVoiceRecordings.isEmpty {
             sendMessage(quotedMessage: quotedMessage?.wrappedValue, editedMessage: nil) {
-                quotedMessage = nil
+                self.quotedMessage = nil
             }
         }
     }
