@@ -50,7 +50,7 @@ final class MarkdownFormatter {
         switch presentationKind {
         case .blockQuote:
             return AttributeContainer()
-                .foregroundColor(Color(colors.subtitleText))
+                .foregroundColor(Color(colors.text))
         case .codeBlock:
             return AttributeContainer()
                 .font(fonts.body.monospaced())
