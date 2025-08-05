@@ -19,7 +19,7 @@ public protocol ViewFactory: AnyObject {
     associatedtype HeaderViewModifier: ChannelListHeaderViewModifier
     /// Creates the channel list header view modifier.
     ///  - Parameter title: the title displayed in the header.
-    func makeChannelListHeaderViewModifier(title: String) -> HeaderViewModifier
+    func makeChannelListHeaderViewModifier(title: String, searchText: Binding<String>) -> HeaderViewModifier
 
     associatedtype NoChannels: View
     /// Creates the view that is displayed when there are no channels available.

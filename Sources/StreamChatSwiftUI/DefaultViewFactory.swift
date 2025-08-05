@@ -23,7 +23,8 @@ extension ViewFactory {
     }
     
     public func makeChannelListHeaderViewModifier(
-        title: String
+        title: String,
+        searchText: Binding<String>
     ) -> some ChannelListHeaderViewModifier {
         DefaultChannelListHeaderModifier(title: title)
     }
