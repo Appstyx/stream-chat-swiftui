@@ -35,7 +35,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     availableWidth: contentWidth
                 )
             } else if messageTypeResolver.hasCustomAttachment(message: message) {
-                factory.makeBeforeMessageView(
+                factory.makeViewBeforeMessageView(
                     message: message
                 )
                 factory.makeCustomAttachmentViewType(
@@ -45,12 +45,12 @@ public struct MessageView<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId
                 )
             } else if let poll = message.poll {
-                factory.makeBeforeMessageView(
+                factory.makeViewBeforeMessageView(
                     message: message
                 )
                 factory.makePollView(message: message, poll: poll, isFirst: isFirst)
             } else if !message.attachmentCounts.isEmpty {
-                factory.makeBeforeMessageView(
+                factory.makeViewBeforeMessageView(
                     message: message
                 )
                 
@@ -110,7 +110,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     )
                 }
             } else {
-                factory.makeBeforeMessageView(
+                factory.makeViewBeforeMessageView(
                     message: message
                 )
                 
