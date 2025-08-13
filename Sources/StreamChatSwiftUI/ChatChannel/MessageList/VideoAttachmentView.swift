@@ -17,7 +17,7 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
             if let quotedMessage = message.quotedMessage {
                 factory.makeViewBeforeMessageView(
                     message: message,
-                    isFirst: isFirst
+                    isFirst: false
                 )
                 
                 VStack {
