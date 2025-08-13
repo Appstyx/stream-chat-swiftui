@@ -928,6 +928,12 @@ extension ViewFactory {
         )
     }
     
+    public func makeViewBeforeMessageView(
+        message: ChatMessage
+    ) -> some View {
+        EmptyView()
+    }
+    
     public func makeReactionsOverlayView(
         channel: ChatChannel,
         currentSnapshot: UIImage,

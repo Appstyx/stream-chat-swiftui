@@ -946,6 +946,12 @@ public protocol ViewFactory: AnyObject {
         onTapGesture: @escaping () -> Void,
         onLongPressGesture: @escaping () -> Void
     ) -> MessageReactionViewType
+    
+    associatedtype ViewBeforeMessageView: View
+    /// Cutsom view OPA
+    func makeViewBeforeMessageView(
+        message: ChatMessage
+    ) -> ViewBeforeMessageView
 
     associatedtype ReactionsOverlayViewType: View
     /// Creates the reactions overlay view.

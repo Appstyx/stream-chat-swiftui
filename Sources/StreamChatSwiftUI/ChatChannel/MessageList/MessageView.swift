@@ -35,6 +35,9 @@ public struct MessageView<Factory: ViewFactory>: View {
                     availableWidth: contentWidth
                 )
             } else if messageTypeResolver.hasCustomAttachment(message: message) {
+                factory.makeBeforeMessageView(
+                    message: message
+                )
                 factory.makeCustomAttachmentViewType(
                     for: message,
                     isFirst: isFirst,
@@ -42,8 +45,15 @@ public struct MessageView<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId
                 )
             } else if let poll = message.poll {
+                factory.makeBeforeMessageView(
+                    message: message
+                )
                 factory.makePollView(message: message, poll: poll, isFirst: isFirst)
             } else if !message.attachmentCounts.isEmpty {
+                factory.makeBeforeMessageView(
+                    message: message
+                )
+                
                 let hasOnlyLinks = { message.attachmentCounts.keys.allSatisfy { $0 == .linkPreview } }
                 if messageTypeResolver.hasLinkAttachment(message: message) && hasOnlyLinks() {
                     factory.makeLinkAttachmentView(
@@ -100,6 +110,10 @@ public struct MessageView<Factory: ViewFactory>: View {
                     )
                 }
             } else {
+                factory.makeBeforeMessageView(
+                    message: message
+                )
+                
                 if message.shouldRenderAsJumbomoji {
                     factory.makeEmojiTextView(
                         message: message,
