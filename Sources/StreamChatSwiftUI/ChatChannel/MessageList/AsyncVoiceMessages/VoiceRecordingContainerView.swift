@@ -41,6 +41,9 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(spacing: 0) {
             VStack {
+                factory.makeViewBeforeMessageView(
+                    message: message
+                )
                 if let quotedMessage = message.quotedMessage {
                     factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,

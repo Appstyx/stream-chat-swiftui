@@ -35,9 +35,6 @@ public struct MessageView<Factory: ViewFactory>: View {
                     availableWidth: contentWidth
                 )
             } else if messageTypeResolver.hasCustomAttachment(message: message) {
-                factory.makeViewBeforeMessageView(
-                    message: message
-                )
                 factory.makeCustomAttachmentViewType(
                     for: message,
                     isFirst: isFirst,
@@ -45,15 +42,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId
                 )
             } else if let poll = message.poll {
-                factory.makeViewBeforeMessageView(
-                    message: message
-                )
                 factory.makePollView(message: message, poll: poll, isFirst: isFirst)
             } else if !message.attachmentCounts.isEmpty {
-                factory.makeViewBeforeMessageView(
-                    message: message
-                )
-                
                 let hasOnlyLinks = { message.attachmentCounts.keys.allSatisfy { $0 == .linkPreview } }
                 if messageTypeResolver.hasLinkAttachment(message: message) && hasOnlyLinks() {
                     factory.makeLinkAttachmentView(
@@ -110,10 +100,6 @@ public struct MessageView<Factory: ViewFactory>: View {
                     )
                 }
             } else {
-                factory.makeViewBeforeMessageView(
-                    message: message
-                )
-                
                 if message.shouldRenderAsJumbomoji {
                     factory.makeEmojiTextView(
                         message: message,
@@ -172,6 +158,10 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
+            factory.makeViewBeforeMessageView(
+                message: message
+            )
+            
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
@@ -212,6 +202,10 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
         ZStack {
             if let quotedMessage = message.quotedMessage {
                 VStack(spacing: 0) {
+                    factory.makeViewBeforeMessageView(
+                        message: message
+                    )
+                    
                     factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,
                         fillAvailableSpace: !message.attachmentCounts.isEmpty,

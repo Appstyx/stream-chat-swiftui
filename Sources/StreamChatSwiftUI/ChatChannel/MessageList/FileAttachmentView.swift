@@ -28,6 +28,10 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
 
     public var body: some View {
         VStack(alignment: message.alignmentInBubble) {
+            factory.makeViewBeforeMessageView(
+                message: message
+            )
+            
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,

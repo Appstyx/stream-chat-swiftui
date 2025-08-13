@@ -23,6 +23,10 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
+            factory.makeViewBeforeMessageView(
+                message: message
+            )
+            
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
