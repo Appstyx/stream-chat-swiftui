@@ -950,7 +950,8 @@ public protocol ViewFactory: AnyObject {
     associatedtype ViewBeforeMessageView: View
     /// Cutsom view OPA
     func makeViewBeforeMessageView(
-        message: ChatMessage
+        message: ChatMessage,
+        isFirst: Bool
     ) -> ViewBeforeMessageView
 
     associatedtype ReactionsOverlayViewType: View

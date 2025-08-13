@@ -929,7 +929,8 @@ extension ViewFactory {
     }
     
     public func makeViewBeforeMessageView(
-        message: ChatMessage
+        message: ChatMessage,
+        isFirst: Bool
     ) -> some View {
         EmptyView()
     }

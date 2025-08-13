@@ -14,11 +14,12 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            factory.makeViewBeforeMessageView(
-                message: message
-            )
-            
             if let quotedMessage = message.quotedMessage {
+                factory.makeViewBeforeMessageView(
+                    message: message,
+                    isFirst: isFirst
+                )
+                
                 VStack {
                     factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,

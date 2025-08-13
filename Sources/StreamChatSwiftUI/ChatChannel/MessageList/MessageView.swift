@@ -159,7 +159,8 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             spacing: 0
         ) {
             factory.makeViewBeforeMessageView(
-                message: message
+                message: message,
+                isFirst: isFirst
             )
             
             if let quotedMessage = message.quotedMessage {
@@ -203,7 +204,8 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
             if let quotedMessage = message.quotedMessage {
                 VStack(spacing: 0) {
                     factory.makeViewBeforeMessageView(
-                        message: message
+                        message: message,
+                        isFirst: isFirst
                     )
                     
                     factory.makeQuotedMessageView(

@@ -42,7 +42,8 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         VStack(spacing: 0) {
             VStack {
                 factory.makeViewBeforeMessageView(
-                    message: message
+                    message: message,
+                    isFirst: isFirst
                 )
                 if let quotedMessage = message.quotedMessage {
                     factory.makeQuotedMessageView(

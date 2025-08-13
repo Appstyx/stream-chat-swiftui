@@ -23,7 +23,8 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             spacing: 0
         ) {
             factory.makeViewBeforeMessageView(
-                message: message
+                message: message,
+                isFirst: isFirst
             )
             
             if let quotedMessage = message.quotedMessage {
