@@ -24,7 +24,8 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
         ) {
             factory.makeViewBeforeMessageView(
                 message: message,
-                isFirst: isFirst
+                isFirst: isFirst,
+                component: "image"
             )
             
             if let quotedMessage = message.quotedMessage {

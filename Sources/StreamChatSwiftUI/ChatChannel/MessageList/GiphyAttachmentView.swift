@@ -25,7 +25,8 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
         ) {
             factory.makeViewBeforeMessageView(
                 message: message,
-                isFirst: isFirst
+                isFirst: isFirst,
+                component: "gif"
             )
             
             if let quotedMessage = message.quotedMessage {

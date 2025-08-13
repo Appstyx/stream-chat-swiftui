@@ -30,7 +30,8 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
         VStack(alignment: message.alignmentInBubble) {
             factory.makeViewBeforeMessageView(
                 message: message,
-                isFirst: isFirst
+                isFirst: isFirst,
+                component: "file"
             )
             
             if let quotedMessage = message.quotedMessage {
