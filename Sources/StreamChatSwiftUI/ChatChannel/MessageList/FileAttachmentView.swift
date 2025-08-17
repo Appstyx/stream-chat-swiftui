@@ -10,6 +10,7 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     var message: ChatMessage
     var width: CGFloat
     var isFirst: Bool
+    var isLastInThread: Bool
     @Binding var scrolledId: String?
 
     public init(
@@ -17,12 +18,14 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
         message: ChatMessage,
         width: CGFloat,
         isFirst: Bool,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool = false
     ) {
         self.factory = factory
         self.message = message
         self.width = width
         self.isFirst = isFirst
+        self.isLastInThread = isLastInThread
         _scrolledId = scrolledId
     }
 
@@ -31,7 +34,8 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
             factory.makeViewBeforeMessageView(
                 message: message,
                 isFirst: isFirst,
-                component: "file"
+                component: "file",
+                isLastInThread: isLastInThread
             )
             
             if let quotedMessage = message.quotedMessage {

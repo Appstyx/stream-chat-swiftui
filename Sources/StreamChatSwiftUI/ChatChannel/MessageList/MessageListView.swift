@@ -145,7 +145,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 scrolledId: $scrolledId,
                                 quotedMessage: $quotedMessage,
                                 onLongPress: handleLongPress(messageDisplayInfo:),
-                                isLast: !showsLastInGroupInfo && message == messages.last
+                                isLast: !showsLastInGroupInfo && message == messages.last,
+                                isLastInThread: isLastInThread(for: message),
                             )
                             .environment(\.channelTranslationLanguage, channel.membership?.language)
                             .onAppear {
@@ -339,6 +340,14 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         }
         let groupInfo = messagesGroupingInfo[message.id] ?? []
         return groupInfo.contains(firstMessageKey) == true
+    }
+    
+    private func isLastInThread(for message: ChatMessage) -> Bool {
+        if !messageListConfig.groupMessages {
+            return true
+        }
+        let groupInfo = messagesGroupingInfo[message.id] ?? []
+        return groupInfo.contains(lastMessageKey) == true
     }
 
     private func showsLastInGroupInfo(

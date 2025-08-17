@@ -23,6 +23,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     var showsAllInfo: Bool
     var isInThread: Bool
     var isLast: Bool
+    var isLastInThread: Bool
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
@@ -53,7 +54,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        viewModel: MessageViewModel? = nil
+        viewModel: MessageViewModel? = nil,
+        isLastInThread: Bool = false
     ) {
         self.factory = factory
         self.channel = channel
@@ -63,6 +65,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
+        self.isLastInThread = isLastInThread
         _messageViewModel = .init(
             wrappedValue: viewModel ?? MessageViewModel(
                 message: message,
@@ -104,7 +107,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         message: message,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                     .overlay(
                         ZStack {

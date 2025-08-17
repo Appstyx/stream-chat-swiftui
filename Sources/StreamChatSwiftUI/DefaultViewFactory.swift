@@ -332,7 +332,8 @@ extension ViewFactory {
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        isLast: Bool
+        isLast: Bool,
+        isLastInThread: Bool
     ) -> some View {
         MessageContainerView(
             factory: self,
@@ -344,7 +345,8 @@ extension ViewFactory {
             isLast: isLast,
             scrolledId: scrolledId,
             quotedMessage: quotedMessage,
-            onLongPress: onLongPress
+            onLongPress: onLongPress,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -352,13 +354,15 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> some View {
         MessageTextView(
             factory: self,
             message: message,
             isFirst: isFirst,
-            scrolledId: scrolledId
+            scrolledId: scrolledId,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -386,14 +390,16 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> some View {
         ImageAttachmentContainer(
             factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
-            scrolledId: scrolledId
+            scrolledId: scrolledId,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -401,14 +407,16 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> some View {
         GiphyAttachmentView(
             factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
-            scrolledId: scrolledId
+            scrolledId: scrolledId,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -416,14 +424,16 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> some View {
         LinkAttachmentContainer(
             factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
-            scrolledId: scrolledId
+            scrolledId: scrolledId,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -431,14 +441,16 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> some View {
         FileAttachmentsContainer(
             factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
-            scrolledId: scrolledId
+            scrolledId: scrolledId,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -446,13 +458,15 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> some View {
         VideoAttachmentsContainer(
             factory: self,
             message: message,
             width: availableWidth,
-            scrolledId: scrolledId
+            scrolledId: scrolledId,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -521,13 +535,15 @@ extension ViewFactory {
     public func makeEmojiTextView(
         message: ChatMessage,
         scrolledId: Binding<String?>,
-        isFirst: Bool
+        isFirst: Bool,
+        isLastInThread: Bool
     ) -> some View {
         EmojiTextView(
             factory: self,
             message: message,
             scrolledId: scrolledId,
-            isFirst: isFirst
+            isFirst: isFirst,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -535,7 +551,8 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> some View {
         EmptyView()
     }
@@ -774,14 +791,16 @@ extension ViewFactory {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> some View {
         VoiceRecordingContainerView(
             factory: self,
             message: message,
             width: availableWidth,
             isFirst: isFirst,
-            scrolledId: scrolledId
+            scrolledId: scrolledId,
+            isLastInThread: isLastInThread
         )
     }
     
@@ -931,7 +950,8 @@ extension ViewFactory {
     public func makeViewBeforeMessageView(
         message: ChatMessage,
         isFirst: Bool,
-        component: String
+        component: String,
+        isLastInThread: Bool
     ) -> some View {
         EmptyView()
     }

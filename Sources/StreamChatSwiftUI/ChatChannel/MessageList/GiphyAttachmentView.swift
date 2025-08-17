@@ -16,6 +16,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
+    let isLastInThread: Bool
     @Binding var scrolledId: String?
 
     public var body: some View {
@@ -26,7 +27,8 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             factory.makeViewBeforeMessageView(
                 message: message,
                 isFirst: isFirst,
-                component: "gif"
+                component: "gif",
+                isLastInThread : isLastInThread
             )
             
             if let quotedMessage = message.quotedMessage {

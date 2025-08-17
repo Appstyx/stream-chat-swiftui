@@ -15,6 +15,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
+    let isLastInThread: Bool
     @Binding var scrolledId: String?
     
     @StateObject var handler = VoiceRecordingHandler()
@@ -29,12 +30,14 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         message: ChatMessage,
         width: CGFloat,
         isFirst: Bool,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool = false
     ) {
         self.factory = factory
         self.message = message
         self.width = width
         self.isFirst = isFirst
+        self.isLastInThread = isLastInThread
         _scrolledId = scrolledId
     }
     
@@ -44,7 +47,8 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                 factory.makeViewBeforeMessageView(
                     message: message,
                     isFirst: isFirst,
-                    component: "voice"
+                    component: "voice",
+                    isLastInThread: isLastInThread
                 )
                 if let quotedMessage = message.quotedMessage {
                     factory.makeQuotedMessageView(

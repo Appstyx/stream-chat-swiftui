@@ -329,7 +329,8 @@ public protocol ViewFactory: AnyObject {
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        isLast: Bool
+        isLast: Bool,
+        isLastInThread: Bool
     ) -> MessageContainerViewType
 
     associatedtype MessageTextViewType: View
@@ -344,7 +345,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> MessageTextViewType
 
     associatedtype MessageDateViewType: View
@@ -386,7 +388,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> ImageAttachmentViewType
 
     associatedtype GiphyAttachmentViewType: View
@@ -401,7 +404,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> GiphyAttachmentViewType
 
     associatedtype LinkAttachmentViewType: View
@@ -416,7 +420,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> LinkAttachmentViewType
 
     associatedtype FileAttachmentViewType: View
@@ -431,7 +436,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> FileAttachmentViewType
 
     associatedtype VideoAttachmentViewType: View
@@ -446,7 +452,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> VideoAttachmentViewType
     
     associatedtype GalleryViewType: View
@@ -533,7 +540,8 @@ public protocol ViewFactory: AnyObject {
     func makeEmojiTextView(
         message: ChatMessage,
         scrolledId: Binding<String?>,
-        isFirst: Bool
+        isFirst: Bool,
+        isLastInThread: Bool
     ) -> EmojiTextViewType
     
     associatedtype VoiceRecordingViewType: View
@@ -548,7 +556,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> VoiceRecordingViewType
 
     associatedtype CustomAttachmentViewType: View
@@ -563,7 +572,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> CustomAttachmentViewType
 
     associatedtype ScrollToBottomButtonType: View
@@ -952,7 +962,8 @@ public protocol ViewFactory: AnyObject {
     func makeViewBeforeMessageView(
         message: ChatMessage,
         isFirst: Bool,
-        component: String
+        component: String,
+        isLastInThread: Bool
     ) -> ViewBeforeMessageView
 
     associatedtype ReactionsOverlayViewType: View

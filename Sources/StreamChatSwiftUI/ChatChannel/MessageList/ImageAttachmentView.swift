@@ -12,6 +12,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
+    let isLastInThread: Bool
     @Binding var scrolledId: String?
 
     @State private var galleryShown = false
@@ -25,7 +26,8 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             factory.makeViewBeforeMessageView(
                 message: message,
                 isFirst: isFirst,
-                component: "image"
+                component: "image",
+                isLastInThread: isLastInThread
             )
             
             if let quotedMessage = message.quotedMessage {
