@@ -15,8 +15,8 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
-    let isLastInThread: Bool
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
     
     @StateObject var handler = VoiceRecordingHandler()
     @State var playingIndex: Int?

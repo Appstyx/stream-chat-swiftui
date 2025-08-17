@@ -12,8 +12,8 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
-    let isLastInThread: Bool
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
 
     @State private var galleryShown = false
     @State private var selectedIndex = 0

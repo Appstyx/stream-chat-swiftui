@@ -16,8 +16,8 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
-    let isLastInThread: Bool
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
 
     public var body: some View {
         VStack(

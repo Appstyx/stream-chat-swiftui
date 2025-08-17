@@ -138,12 +138,12 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     private let factory: Factory
     private let message: ChatMessage
     private let isFirst: Bool
-    private let isLastInThread: Bool
     private let leadingPadding: CGFloat
     private let trailingPadding: CGFloat
     private let topPadding: CGFloat
     private let bottomPadding: CGFloat
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
 
     public init(
         factory: Factory,
