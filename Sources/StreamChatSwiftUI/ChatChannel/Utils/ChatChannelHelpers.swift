@@ -35,9 +35,9 @@ struct WidthPreferenceKey: PreferenceKey {
 }
 
 public struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
+    public static var defaultValue: CGFloat? = nil
 
-    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+    public static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = value ?? nextValue()
     }
 }

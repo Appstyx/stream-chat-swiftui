@@ -153,7 +153,11 @@ public struct MessageReadIndicatorView: View {
 public struct MessageSpacer: View {
     var spacerWidth: CGFloat?
     
-    var body: some View {
+    public init(spacerWidth: CGFloat?) {
+        self.spacerWidth = spacerWidth
+    }
+    
+    public var body: some View {
         Spacer()
             .frame(minWidth: spacerWidth)
             .layoutPriority(-1)
