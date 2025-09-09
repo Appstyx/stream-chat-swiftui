@@ -354,6 +354,12 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter message: the chat message for which the date info is displayed.
     /// - Returns: view shown in the date indicator slot.
     func makeMessageDateView(for message: ChatMessage) -> MessageDateViewType
+    
+    associatedtype MessageZapCountType: View
+    /// Creates a view for the date info shown below a message.
+    /// - Parameter message: the chat message for which the date info is displayed.
+    /// - Returns: view shown in the date indicator slot.
+    func makeMessageZapCount(for message: ChatMessage) -> MessageZapCountType
 
     associatedtype MessageAuthorAndDateViewType: View
     /// Creates a view for the date and author info shown below a message.

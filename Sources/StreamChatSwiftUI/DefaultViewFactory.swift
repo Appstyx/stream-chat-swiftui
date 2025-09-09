@@ -370,6 +370,10 @@ extension ViewFactory {
         MessageDateView(message: message)
     }
     
+    public func makeMessageZapCount(for message: ChatMessage) -> some View {
+        EmptyView()
+    }
+    
     public func makeMessageAuthorAndDateView(for message: ChatMessage) -> some View {
         MessageAuthorAndDateView(message: message)
     }

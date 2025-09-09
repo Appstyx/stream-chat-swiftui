@@ -265,6 +265,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                             factory.makeMessageDateView(for: message)
                         }
                     }
+                    
+                    if !showsAllInfo && !message.isDeleted {
+                        factory.makeMessageZapCount(for: message)
+                    }
                 }
                 .overlay(
                     offsetX > 0 ?
