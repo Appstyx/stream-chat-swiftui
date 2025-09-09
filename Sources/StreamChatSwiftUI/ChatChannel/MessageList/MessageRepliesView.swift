@@ -127,7 +127,7 @@ public struct LazyMessageRepliesView<Factory: ViewFactory>: View {
     var channel: ChatChannel
     var message: ChatMessage
 
-    init(
+    public init(
         factory: Factory,
         channel: ChatChannel,
         message: ChatMessage,
@@ -139,7 +139,7 @@ public struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         self.message = message
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             if let parentMessage = parentMessageObserver.message {
                 factory.makeMessageRepliesShownInChannelView(
