@@ -150,7 +150,7 @@ public struct MessageReadIndicatorView: View {
 }
 
 /// Message spacer view, used for adding space depending on who sent the message..
-struct MessageSpacer: View {
+public struct MessageSpacer: View {
     var spacerWidth: CGFloat?
     
     var body: some View {

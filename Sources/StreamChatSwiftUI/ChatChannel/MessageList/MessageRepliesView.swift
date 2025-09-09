@@ -120,7 +120,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
 /// Lazy view that uses the message controller to fetch the parent message before creating message replies view.
 /// This is needed when the parent message is not available in the local cache.
 /// Changing the `parentMessage` to `nil` in the `MessageRepliesView` would case multiple changes including breaking changes.
-struct LazyMessageRepliesView<Factory: ViewFactory>: View {
+public struct LazyMessageRepliesView<Factory: ViewFactory>: View {
     @StateObject private var parentMessageObserver: ChatMessageController.ObservableObject
 
     var factory: Factory
