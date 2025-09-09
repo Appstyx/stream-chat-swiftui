@@ -250,6 +250,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
+                                factory.makeMessageZapCount(for: message)
+                                
                                 factory.makeMessageReadIndicatorView(
                                     channel: channel,
                                     message: message
@@ -260,9 +262,17 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 }
                             }
                         } else if messageViewModel.authorAndDateShown {
-                            factory.makeMessageAuthorAndDateView(for: message)
+                            HStack(spacing: 4) {
+                                factory.makeMessageAuthorAndDateView(for: message)
+                                
+                                factory.makeMessageZapCount(for: message)
+                            }
                         } else if messageViewModel.messageDateShown {
-                            factory.makeMessageDateView(for: message)
+                            HStack(spacing: 4) {
+                                factory.makeMessageDateView(for: message)
+                                
+                                factory.makeMessageZapCount(for: message)
+                            }
                         }
                     }
                     
