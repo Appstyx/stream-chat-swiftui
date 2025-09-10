@@ -346,7 +346,8 @@ extension ViewFactory {
             scrolledId: scrolledId,
             quotedMessage: quotedMessage,
             onLongPress: onLongPress,
-            isLastInThread: isLastInThread
+            isLastInThread: isLastInThread,
+            onShortPress: {}
         )
     }
     
