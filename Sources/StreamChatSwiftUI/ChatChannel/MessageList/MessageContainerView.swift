@@ -27,6 +27,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
+    var onShortPress: (MessageDisplayInfo) -> Void
 
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
@@ -55,7 +56,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         viewModel: MessageViewModel? = nil,
-        isLastInThread: Bool = false
+        isLastInThread: Bool = false,
+        onShortPress: @escaping (MessageDisplayInfo) -> Void
     ) {
         self.factory = factory
         self.channel = channel
@@ -65,6 +67,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
+        self.onShortPress = onShortPress
         self.isLastInThread = isLastInThread
         _messageViewModel = .init(
             wrappedValue: viewModel ?? MessageViewModel(
@@ -134,6 +137,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 })
                         }
                     )
+                    .onTapGesture {
+                        handleTapMessage()
+                    }
                     .onTapGesture(count: 2) {
                         if messageListConfig.doubleTapOverlayEnabled {
                             handleGestureForMessage(showsMessageActions: true)
@@ -389,6 +395,19 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         withAnimation(.interpolatingSpring(stiffness: 170, damping: 20)) {
             self.offsetX = value
         }
+    }
+    
+    func handleTapMessage() {
+        onShortPress(
+            MessageDisplayInfo(
+                message: message,
+                frame: frame,
+                contentWidth: contentWidth,
+                isFirst: showsAllInfo,
+                showsMessageActions: showsMessageActions,
+                showsBottomContainer: showsBottomContainer
+            )
+        )
     }
 
     func handleGestureForMessage(
