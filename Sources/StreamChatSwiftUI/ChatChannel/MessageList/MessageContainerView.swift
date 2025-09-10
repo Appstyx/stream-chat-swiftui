@@ -404,8 +404,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 frame: frame,
                 contentWidth: contentWidth,
                 isFirst: showsAllInfo,
-                showsMessageActions: showsMessageActions,
-                showsBottomContainer: showsBottomContainer
+                showsMessageActions: false,
+                showsBottomContainer: false
             )
         )
     }
