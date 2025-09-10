@@ -347,7 +347,7 @@ extension ViewFactory {
             quotedMessage: quotedMessage,
             onLongPress: onLongPress,
             isLastInThread: isLastInThread,
-            onShortPress: {}
+            onShortPress: { _ in }
         )
     }
     
