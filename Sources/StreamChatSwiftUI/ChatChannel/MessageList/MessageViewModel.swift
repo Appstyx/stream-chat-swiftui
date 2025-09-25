@@ -86,7 +86,7 @@ open class MessageViewModel: ObservableObject {
     }
 
     open var isSwipeToQuoteReplyPossible: Bool {
-        message.isInteractionEnabled && channel?.config.repliesEnabled == true
+        message.isInteractionEnabled
     }
 
     open var textContent: String {
