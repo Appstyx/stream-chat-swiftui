@@ -71,7 +71,7 @@ struct InstantCommandsView: View {
         if instantCommands.isEmpty {
             return 40
         }
-        let height = CGFloat(instantCommands.count) * itemHeight + 70
+        let height = CGFloat(instantCommands.count) * itemHeight
         let maxHeight: CGFloat = 320
         return height > maxHeight ? maxHeight : height
     }
