@@ -19,9 +19,9 @@ struct InstantCommandsView: View {
 
     var body: some View {
         VStack {
-            InstantCommandsHeader()
-                .standardPadding()
-                .accessibilityElement(children: .contain)
+            //InstantCommandsHeader()
+            //    .standardPadding()
+            //    .accessibilityElement(children: .contain)
 
             ScrollView {
                 VStack {
