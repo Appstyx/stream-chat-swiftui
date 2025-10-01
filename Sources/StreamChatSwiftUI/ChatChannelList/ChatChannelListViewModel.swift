@@ -320,7 +320,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         )
     }
 
-    private func setupChannelListController() {
+    public func setupChannelListController() {
         controller?.delegate = self
 
         updateChannels()
