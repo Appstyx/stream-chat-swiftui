@@ -43,7 +43,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     
     public var body: some View {
         VStack(spacing: 0) {
-            VStack {
+            VStack(alignment: message.alignmentInBubble) {
                 factory.makeViewBeforeMessageView(
                     message: message,
                     isFirst: isFirst,

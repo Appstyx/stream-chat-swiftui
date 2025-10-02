@@ -14,7 +14,10 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     let isLastInThread: Bool
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(
+            alignment: message.alignmentInBubble,
+            spacing: 0
+        ) {
             if let quotedMessage = message.quotedMessage {
                 factory.makeViewBeforeMessageView(
                     message: message,
