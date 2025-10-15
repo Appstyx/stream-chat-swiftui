@@ -127,6 +127,8 @@ open class MessageComposerViewModel: ObservableObject {
         }
     }
     
+    @Published public var canCloseAttachmentView: Bool = true
+    
     @Published public var pickerTypeState: PickerTypeState = .expanded(.none) {
         didSet {
             switch pickerTypeState {

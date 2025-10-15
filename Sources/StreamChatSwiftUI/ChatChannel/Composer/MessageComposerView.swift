@@ -177,7 +177,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .onReceive(keyboardWillChangePublisher) { visible in
             if visible && !keyboardShown {
-                if viewModel.composerCommand == nil && !editedMessageWillShow {
+                if viewModel.composerCommand == nil && !editedMessageWillShow && viewModel.canCloseAttachmentView {
                     withAnimation(.easeInOut(duration: 0.02)) {
                         viewModel.pickerTypeState = .expanded(.none)
                     }
