@@ -25,7 +25,7 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
 
         PHImageManager.default().requestImage(
             for: asset,
-            targetSize: CGSize(width: 250, height: 250),
+            targetSize: CGSize(width: 500, height: 500),
             contentMode: .aspectFit,
             options: options
         ) { [weak self] image, _ in
