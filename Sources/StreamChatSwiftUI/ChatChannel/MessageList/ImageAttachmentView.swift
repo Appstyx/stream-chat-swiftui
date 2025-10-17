@@ -46,7 +46,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 ImageAttachmentView(
                     message: message,
                     sources: sources,
-                    width: width
+                    width: adjustedWidth
                 ) { index in
                     if message.localState == nil {
                         selectedIndex = index
@@ -56,7 +56,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
 
                 if !message.text.isEmpty {
                     AttachmentTextView(message: message)
-                        .frame(width: width)
+                        .frame(width: adjustedWidth)
                 }
             }
         }
@@ -108,6 +108,17 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             )
         }
         return videoSources + imageSources
+    }
+    
+    // MARK: - Computed property for adjusted width
+    private var adjustedWidth: CGFloat {
+        // if there’s only one source and it’s a GIF → reduce width to 3/4
+        if sources.count == 1,
+           sources.first?.url.pathExtension.lowercased() == "gif" {
+            return width * 3 / 4
+        } else {
+            return width
+        }
     }
 }
 
@@ -167,6 +178,19 @@ struct ImageAttachmentView: View {
 
     private var imageCDN: ImageCDN {
         utils.imageCDN
+    }
+    
+    /// Computed property for the “is single GIF” check
+    private var isSingleGif: Bool {
+        sources.count == 1 &&
+        sources.first?.url.pathExtension.lowercased() == "gif"
+    }
+    
+    // MARK: - Reusable Condition
+    /// Returns true if there is exactly one source and it’s a GIF.
+    private static func isSingleGif(sources: [MediaAttachment]) -> Bool {
+        guard sources.count == 1 else { return false }
+        return sources.first?.url.pathExtension.lowercased() == "gif"
     }
 
     var body: some View {
@@ -291,7 +315,12 @@ struct ImageAttachmentView: View {
     }
 
     private var fullHeight: CGFloat {
-        3 * width / 4
+        // If only one source and it's a GIF → make it square
+        if isSingleGif {
+            return width
+        } else {
+            return 3 * width / 4
+        }
     }
 
     private var notDisplayedImages: Int {
@@ -310,7 +339,11 @@ struct SingleImageView: View {
     var index: Int?
 
     private var height: CGFloat {
-        3 * width / 4
+        if source.url.pathExtension.lowercased() == "gif" {
+            return width
+        } else {
+            return 3 * width / 4
+        }
     }
 
     var body: some View {
@@ -384,7 +417,7 @@ public struct LazyLoadingImage: View {
     public var body: some View {
         ZStack {
             if let image = image {
-                imageView(for: image)
+                imageView(for: image, url: source.url, isGif: source.url.pathExtension.lowercased() == "gif")
                 if let imageTapped = imageTapped {
                     // NOTE: needed because of bug with SwiftUI.
                     // The click area expands outside the image view (although not visible).
@@ -440,16 +473,23 @@ public struct LazyLoadingImage: View {
         }
     }
 
-    func imageView(for image: UIImage) -> some View {
-        Image(uiImage: image)
-            .resizable()
-            .scaledToFill()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
-            .allowsHitTesting(false)
-            .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
-            .clipped()
-            .accessibilityHidden(true)
+    func imageView(for image: UIImage, url: URL, isGif: Bool) -> some View {
+        Group {
+            if isGif {
+                LazyGiphyView(source: url, width: 800)
+            } else {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .aspectRatio(contentMode: .fill)
+            }
+        }
+        .frame(width: shouldSetFrame ? width : nil,
+               height: shouldSetFrame ? height : nil)
+        .allowsHitTesting(false)
+        .scaleEffect(1.0001) // Fix for landscape rendering issue
+        .clipped()
+        .accessibilityHidden(true)
     }
 }
 
