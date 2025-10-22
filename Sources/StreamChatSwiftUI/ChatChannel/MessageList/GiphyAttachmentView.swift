@@ -132,3 +132,29 @@ public struct LazyGiphyView: View {
         .aspectRatio(contentMode: .fit)
     }
 }
+
+public struct LazyGifViewAdaptive: View {
+    let source: URL
+
+    public init(source: URL) {
+        self.source = source
+    }
+
+    public var body: some View {
+        LazyImage(url: source) { state in
+            if let container = state.imageContainer {
+                NukeImage(container)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+            } else if state.error != nil {
+                Color(.secondarySystemBackground)
+            } else {
+                ZStack {
+                    Color(.secondarySystemBackground)
+                    ProgressView()
+                }
+            }
+        }
+        .onDisappear(.cancel)
+    }
+}

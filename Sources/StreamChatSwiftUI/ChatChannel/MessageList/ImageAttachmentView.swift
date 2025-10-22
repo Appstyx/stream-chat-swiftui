@@ -112,13 +112,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     
     // MARK: - Computed property for adjusted width
     private var adjustedWidth: CGFloat {
-        // if there’s only one source and it’s a GIF → reduce width to 3/4
-        if sources.count == 1,
-           sources.first?.url.pathExtension.lowercased() == "gif" {
-            return width * 3 / 4
-        } else {
-            return width
-        }
+        return width
     }
 }
 
@@ -311,7 +305,7 @@ struct ImageAttachmentView: View {
                 }
             }
         }
-        .frame(width: width, height: fullHeight)
+        .frame(width: width, height: !isSingleGif ? fullHeight : nil)
     }
 
     private var fullHeight: CGFloat {
@@ -339,10 +333,14 @@ struct SingleImageView: View {
     var index: Int?
 
     private var height: CGFloat {
+        return 3 * width / 4
+    }
+    
+    private var shouldSetFrame: Bool {
         if source.url.pathExtension.lowercased() == "gif" {
-            return width
+            return false
         } else {
-            return 3 * width / 4
+            return true
         }
     }
 
@@ -351,10 +349,11 @@ struct SingleImageView: View {
             source: source,
             width: width,
             height: height,
+            shouldSetFrame: shouldSetFrame,
             imageTapped: imageTapped,
             index: index
         )
-        .frame(width: width, height: height)
+        .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
         .accessibilityIdentifier("SingleImageView")
     }
 }
@@ -476,7 +475,7 @@ public struct LazyLoadingImage: View {
     func imageView(for image: UIImage, url: URL, isGif: Bool) -> some View {
         Group {
             if isGif {
-                LazyGiphyView(source: url, width: 800)
+                LazyGifViewAdaptive(source: url)
             } else {
                 Image(uiImage: image)
                     .resizable()
