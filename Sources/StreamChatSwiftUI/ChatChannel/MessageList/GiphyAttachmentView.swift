@@ -143,8 +143,11 @@ public struct LazyGifViewAdaptive: View {
     public var body: some View {
         LazyImage(url: source) { state in
             if let container = state.imageContainer {
+                let uiImage = container.image
+                let ratio = uiImage.size.height / uiImage.size.width
+
                 NukeImage(container)
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(ratio, contentMode: .fit)
                     .frame(maxWidth: .infinity)
             } else if state.error != nil {
                 Color(.secondarySystemBackground)
