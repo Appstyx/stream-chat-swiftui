@@ -422,7 +422,7 @@ public struct LazyLoadingImage: View {
                     // The click area expands outside the image view (although not visible).
                     Rectangle()
                         .fill(.clear)
-                        .frame(width: width, height: height)
+                        .frame(width: width, height: shouldSetFrame ? height : nil)
                         .contentShape(.rect)
                         .clipped()
                         .allowsHitTesting(true)

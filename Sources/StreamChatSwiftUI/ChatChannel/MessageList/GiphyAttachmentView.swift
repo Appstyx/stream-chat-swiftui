@@ -144,18 +144,22 @@ public struct LazyGifViewAdaptive: View {
         LazyImage(url: source) { state in
             if let container = state.imageContainer {
                 let uiImage = container.image
-                let ratio = uiImage.size.height / uiImage.size.width
+                let ratio = uiImage.size.width / uiImage.size.height
 
                 NukeImage(container)
                     .aspectRatio(ratio, contentMode: .fit)
                     .frame(maxWidth: .infinity)
             } else if state.error != nil {
                 Color(.secondarySystemBackground)
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(maxWidth: .infinity)
             } else {
                 ZStack {
                     Color(.secondarySystemBackground)
                     ProgressView()
                 }
+                .aspectRatio(1, contentMode: .fit)
+                .frame(maxWidth: .infinity)
             }
         }
         .onDisappear(.cancel)
