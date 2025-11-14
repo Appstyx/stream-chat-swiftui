@@ -28,6 +28,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
     var onShortPress: (MessageDisplayInfo) -> Void
+    var onDoublePress: (MessageDisplayInfo) -> Void
 
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
@@ -57,7 +58,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
         viewModel: MessageViewModel? = nil,
         isLastInThread: Bool = false,
-        onShortPress: @escaping (MessageDisplayInfo) -> Void
+        onShortPress: @escaping (MessageDisplayInfo) -> Void,
+        onDoublePress: @escaping (MessageDisplayInfo) -> Void,
     ) {
         self.factory = factory
         self.channel = channel
@@ -68,6 +70,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isLast = isLast
         self.onLongPress = onLongPress
         self.onShortPress = onShortPress
+        self.onDoublePress = onDoublePress
         self.isLastInThread = isLastInThread
         _messageViewModel = .init(
             wrappedValue: viewModel ?? MessageViewModel(
@@ -141,6 +144,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         handleTapMessage()
                     }
                     .onTapGesture(count: 2) {
+                        handleDoubleTapMessage()
                         if messageListConfig.doubleTapOverlayEnabled {
                             handleGestureForMessage(showsMessageActions: true)
                         }
@@ -395,6 +399,19 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         withAnimation(.interpolatingSpring(stiffness: 170, damping: 20)) {
             self.offsetX = value
         }
+    }
+    
+    func handleDoubleTapMessage() {
+        onDoublePress(
+            MessageDisplayInfo(
+                message: message,
+                frame: frame,
+                contentWidth: contentWidth,
+                isFirst: showsAllInfo,
+                showsMessageActions: false,
+                showsBottomContainer: false
+            )
+        )
     }
     
     func handleTapMessage() {
