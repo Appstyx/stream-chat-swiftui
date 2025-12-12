@@ -712,7 +712,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         
-        let dateString = messageListDateOverlay.string(from: currentDate)
+        let dateString = DateFormatter.dateToStringFormatted(from: currentDate)
         if currentDateString != dateString {
             currentDateString = dateString
         }
