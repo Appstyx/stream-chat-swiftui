@@ -192,6 +192,24 @@ public protocol ViewFactory: AnyObject {
         onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
         onItemAppear: @escaping (Int) -> Void
     ) -> ChannelListSearchResultsViewType
+    
+    associatedtype ChannelListViewType: View
+    func makeChannelList(
+        channels: LazyCachedMapCollection<ChatChannel>,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        swipedChannelId: Binding<String?>,
+        onlineIndicatorShown: ((ChatChannel) -> Bool)?,
+        imageLoader: ((ChatChannel) -> UIImage)?,
+        onItemTap: @escaping (ChatChannel) -> Void,
+        onItemAppear: @escaping (Int) -> Void,
+        channelNaming: ((ChatChannel) -> String)?,
+        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void,
+        onRefreshable: @escaping () async -> Void,
+        preselectChannelIfNeeded: @escaping () -> Void,
+        scrollToTopSignal: Int
+    ) -> ChannelListViewType
 
     associatedtype ChannelListSearchResultItem: View
     /// Creates the search result item in the channel list.

@@ -230,39 +230,31 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     onItemAppear: viewModel.loadAdditionalSearchResults(index:)
                 )
             } else {
-                ScrollViewReader { proxy in
-                    ChannelList(
-                        factory: viewFactory,
-                        channels: viewModel.channels,
-                        selectedChannel: $viewModel.selectedChannel,
-                        swipedChannelId: $viewModel.swipedChannelId,
-                        onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
-                        imageLoader: channelHeaderLoader.image(for:),
-                        onItemTap: onItemTap,
-                        onItemAppear: { index in
-                            viewModel.checkTabBarAppearance()
-                            viewModel.checkForChannels(index: index)
-                        },
-                        channelNaming: viewModel.name(forChannel:),
-                        channelDestination: viewFactory.makeChannelDestination(),
-                        trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
-                        trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
-                        leadingSwipeButtonTapped: { _ in /* No leading button by default. */ },
-                        onRefreshable: {
-                            Task {
-                                await viewModel.setupChannelListController()
-                            }
+                viewFactory.makeChannelList(
+                    channels: viewModel.channels,
+                    selectedChannel: $viewModel.selectedChannel,
+                    swipedChannelId: $viewModel.swipedChannelId,
+                    onlineIndicatorShown: viewModel.onlineIndicatorShown(for:),
+                    imageLoader: channelHeaderLoader.image(for:),
+                    onItemTap: onItemTap,
+                    onItemAppear: { index in
+                        viewModel.checkTabBarAppearance()
+                        viewModel.checkForChannels(index: index)
+                    },
+                    channelNaming: viewModel.name(forChannel:),
+                    trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
+                    trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
+                    leadingSwipeButtonTapped: { _ in /* No leading button by default. */ },
+                    onRefreshable: {
+                        Task {
+                            await viewModel.setupChannelListController()
                         }
-                    )
-                    .onAppear {
+                    },
+                    preselectChannelIfNeeded: {
                         viewModel.preselectChannelIfNeeded()
-                    }
-                    .onChange(of: viewModel.scrollToTopSignal) { _ in
-                        withAnimation {
-                            proxy.scrollTo("ChatChannelListTop")
-                        }
-                    }
-                }
+                    },
+                    scrollToTopSignal: viewModel.scrollToTopSignal
+                )
             }
 
             viewFactory.makeChannelListStickyFooterView()

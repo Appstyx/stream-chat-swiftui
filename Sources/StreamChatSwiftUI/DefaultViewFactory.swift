@@ -196,6 +196,25 @@ extension ViewFactory {
         )
     }
     
+    public func makeChannelList(
+        channels: LazyCachedMapCollection<ChatChannel>,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        swipedChannelId: Binding<String?>,
+        onlineIndicatorShown: ((ChatChannel) -> Bool)? = nil,
+        imageLoader: ((ChatChannel) -> UIImage)? = nil,
+        onItemTap: @escaping (ChatChannel) -> Void,
+        onItemAppear: @escaping (Int) -> Void,
+        channelNaming: ((ChatChannel) -> String)? = nil,
+        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
+        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
+        onRefreshable: @escaping () async -> Void,
+        preselectChannelIfNeeded: @escaping () -> Void,
+        scrollToTopSignal: Int
+    ) -> some View {
+        EmptyView()
+    }
+    
     public func makeChannelListSearchResultItem(
         searchResult: ChannelSelectionInfo,
         onlineIndicatorShown: Bool,
