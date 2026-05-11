@@ -8,7 +8,7 @@ import StreamChat
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
 public class Utils {
-    var markdownFormatter = MarkdownFormatter()
+    public var markdownFormatter = MarkdownFormatter()
 
     public var dateFormatter: DateFormatter
     
@@ -68,7 +68,7 @@ public class Utils {
 
     var messageCachingUtils = MessageCachingUtils()
     var messageListDateUtils: MessageListDateUtils
-    var channelControllerFactory = ChannelControllerFactory()
+    public var channelControllerFactory = ChannelControllerFactory()
     
     internal var _audioPlayer: AudioPlaying?
     internal var _audioRecorder: AudioRecording?

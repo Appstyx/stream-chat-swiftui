@@ -36,6 +36,13 @@ struct ComposerTextInputView: UIViewRepresentable {
         inputTextView.onImagePasted = {
             composerViewModel.imagePasted($0)
         }
+        
+        if ProcessInfo.processInfo.isiOSAppOnMac {
+            inputTextView.inputAccessoryView = nil
+            inputTextView.inputAssistantItem.leadingBarButtonGroups = []
+            inputTextView.inputAssistantItem.trailingBarButtonGroups = []
+            inputTextView.reloadInputViews()
+        }
 
         if utils.messageListConfig.becomesFirstResponderOnOpen {
             inputTextView.becomeFirstResponder()

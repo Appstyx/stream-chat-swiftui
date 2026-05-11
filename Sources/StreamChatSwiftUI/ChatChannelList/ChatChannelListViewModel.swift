@@ -320,7 +320,7 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
         )
     }
 
-    private func setupChannelListController() {
+    public func setupChannelListController() {
         controller?.delegate = self
 
         updateChannels()
@@ -569,6 +569,12 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
 
     @objc private func handleHideTabBar() {
         hideTabBar = true
+    }
+    
+    @Published var scrollToTopSignal: Int = 0
+    
+    public func scrollToTop() {
+        scrollToTopSignal += 1
     }
 }
 

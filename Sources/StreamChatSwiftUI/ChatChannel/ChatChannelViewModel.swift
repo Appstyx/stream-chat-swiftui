@@ -347,7 +347,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
         if let firstUnreadMessageId, firstUnreadMessageId.contains(message.id), hasSetInitialCanMarkRead {
             canMarkRead = true
         }
-        if utils.messageListConfig.dateIndicatorPlacement == .overlay {
+        if utils.messageListConfig.dateIndicatorPlacement == .messageList { // Custom code : show overlay and messagelist
             save(lastDate: message.createdAt)
         }
         if index == 0, channelDataSource.hasLoadedAllNextMessages {
@@ -712,7 +712,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
             return
         }
         
-        let dateString = messageListDateOverlay.string(from: currentDate)
+        let dateString = DateFormatter.dateToStringFormatted(from: currentDate)
         if currentDateString != dateString {
             currentDateString = dateString
         }
@@ -804,7 +804,7 @@ extension ChatMessage: Identifiable {
         messageId
     }
     
-    var messageId: String {
+    public var messageId: String {
         InjectedValues[\.utils].messageIdBuilder.makeMessageId(for: self)
     }
     

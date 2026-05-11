@@ -11,10 +11,21 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(
+            alignment: message.alignmentInBubble,
+            spacing: 0
+        ) {
             if let quotedMessage = message.quotedMessage {
+                factory.makeViewBeforeMessageView(
+                    message: message,
+                    isFirst: false,
+                    component: "video",
+                    isLastInThread: isLastInThread
+                )
+                
                 VStack {
                     factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,

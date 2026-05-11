@@ -13,6 +13,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
     let width: CGFloat
     let isFirst: Bool
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
 
     @State private var galleryShown = false
     @State private var selectedIndex = 0
@@ -22,6 +23,13 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
+            factory.makeViewBeforeMessageView(
+                message: message,
+                isFirst: isFirst,
+                component: "image",
+                isLastInThread: isLastInThread
+            )
+            
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
@@ -38,7 +46,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 ImageAttachmentView(
                     message: message,
                     sources: sources,
-                    width: width
+                    width: adjustedWidth
                 ) { index in
                     if message.localState == nil {
                         selectedIndex = index
@@ -48,7 +56,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
 
                 if !message.text.isEmpty {
                     AttachmentTextView(message: message)
-                        .frame(width: width)
+                        .frame(width: adjustedWidth)
                 }
             }
         }
@@ -100,6 +108,11 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             )
         }
         return videoSources + imageSources
+    }
+    
+    // MARK: - Computed property for adjusted width
+    private var adjustedWidth: CGFloat {
+        return width
     }
 }
 
@@ -159,6 +172,19 @@ struct ImageAttachmentView: View {
 
     private var imageCDN: ImageCDN {
         utils.imageCDN
+    }
+    
+    /// Computed property for the “is single GIF” check
+    private var isSingleGif: Bool {
+        sources.count == 1 &&
+        sources.first?.url.pathExtension.lowercased() == "gif"
+    }
+    
+    // MARK: - Reusable Condition
+    /// Returns true if there is exactly one source and it’s a GIF.
+    private static func isSingleGif(sources: [MediaAttachment]) -> Bool {
+        guard sources.count == 1 else { return false }
+        return sources.first?.url.pathExtension.lowercased() == "gif"
     }
 
     var body: some View {
@@ -279,11 +305,16 @@ struct ImageAttachmentView: View {
                 }
             }
         }
-        .frame(width: width, height: fullHeight)
+        .frame(width: width, height: !isSingleGif ? fullHeight : nil)
     }
 
     private var fullHeight: CGFloat {
-        3 * width / 4
+        // If only one source and it's a GIF → make it square
+        if isSingleGif {
+            return width
+        } else {
+            return 3 * width / 4
+        }
     }
 
     private var notDisplayedImages: Int {
@@ -302,7 +333,15 @@ struct SingleImageView: View {
     var index: Int?
 
     private var height: CGFloat {
-        3 * width / 4
+        return 3 * width / 4
+    }
+    
+    private var shouldSetFrame: Bool {
+        if source.url.pathExtension.lowercased() == "gif" {
+            return false
+        } else {
+            return true
+        }
     }
 
     var body: some View {
@@ -310,10 +349,11 @@ struct SingleImageView: View {
             source: source,
             width: width,
             height: height,
+            shouldSetFrame: shouldSetFrame,
             imageTapped: imageTapped,
             index: index
         )
-        .frame(width: width, height: height)
+        .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
         .accessibilityIdentifier("SingleImageView")
     }
 }
@@ -338,7 +378,7 @@ struct MultiImageView: View {
     }
 }
 
-struct LazyLoadingImage: View {
+public struct LazyLoadingImage: View {
     @Injected(\.utils) private var utils
 
     @State private var image: UIImage?
@@ -352,17 +392,37 @@ struct LazyLoadingImage: View {
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
     var onImageLoaded: (UIImage) -> Void = { _ in /* Default implementation. */ }
+    
+    public init(
+        source: MediaAttachment,
+        width: CGFloat,
+        height: CGFloat,
+        resize: Bool = true,
+        shouldSetFrame: Bool = true,
+        imageTapped: ((Int) -> Void)? = nil,
+        index: Int? = nil,
+        onImageLoaded: @escaping (UIImage) -> Void = { _ in }
+    ) {
+        self.source = source
+        self.width = width
+        self.height = height
+        self.resize = resize
+        self.shouldSetFrame = shouldSetFrame
+        self.imageTapped = imageTapped
+        self.index = index
+        self.onImageLoaded = onImageLoaded
+    }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             if let image = image {
-                imageView(for: image)
+                imageView(for: image, url: source.url, isGif: source.url.pathExtension.lowercased() == "gif")
                 if let imageTapped = imageTapped {
                     // NOTE: needed because of bug with SwiftUI.
                     // The click area expands outside the image view (although not visible).
                     Rectangle()
                         .fill(.clear)
-                        .frame(width: width, height: height)
+                        .frame(width: width, height: shouldSetFrame ? height : nil)
                         .contentShape(.rect)
                         .clipped()
                         .allowsHitTesting(true)
@@ -412,16 +472,23 @@ struct LazyLoadingImage: View {
         }
     }
 
-    func imageView(for image: UIImage) -> some View {
-        Image(uiImage: image)
-            .resizable()
-            .scaledToFill()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
-            .allowsHitTesting(false)
-            .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
-            .clipped()
-            .accessibilityHidden(true)
+    func imageView(for image: UIImage, url: URL, isGif: Bool) -> some View {
+        Group {
+            if isGif {
+                LazyGifViewAdaptive(source: url)
+            } else {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .aspectRatio(contentMode: .fill)
+            }
+        }
+        .frame(width: shouldSetFrame ? width : nil,
+               height: shouldSetFrame ? height : nil)
+        .allowsHitTesting(false)
+        .scaleEffect(1.0001) // Fix for landscape rendering issue
+        .clipped()
+        .accessibilityHidden(true)
     }
 }
 
@@ -438,6 +505,16 @@ public struct MediaAttachment {
     let url: URL
     let type: MediaAttachmentType
     var uploadingState: AttachmentUploadingState?
+    
+    public init(
+        url: URL,
+        type: MediaAttachmentType,
+        uploadingState: AttachmentUploadingState? = nil
+    ) {
+        self.url = url
+        self.type = type
+        self.uploadingState = uploadingState
+    }
     
     func generateThumbnail(
         resize: Bool,
@@ -477,7 +554,7 @@ extension MediaAttachment {
     }
 }
 
-enum MediaAttachmentType {
+public enum MediaAttachmentType {
     case image
     case video
 }

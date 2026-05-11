@@ -5,13 +5,17 @@
 import StreamChat
 import SwiftUI
 
-struct RecordingDurationView: View {
+public struct RecordingDurationView: View {
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
     
     var duration: TimeInterval
     
-    var body: some View {
+    public init(duration: TimeInterval) {
+        self.duration = duration
+    }
+    
+    public var body: some View {
         Text(utils.videoDurationFormatter.format(duration) ?? "")
             .font(.caption.monospacedDigit())
             .fontWeight(.semibold)

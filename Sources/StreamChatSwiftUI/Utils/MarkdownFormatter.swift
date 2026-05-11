@@ -7,14 +7,14 @@ import StreamChat
 import SwiftUI
 
 /// Converts markdown string to AttributedString with styling attributes.
-final class MarkdownFormatter {
+public final class MarkdownFormatter {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
     private let markdownParser = MarkdownParser()
         
     @available(iOS 15, *)
-    func format(
+    public func format(
         _ string: String,
         attributes: AttributeContainer,
         layoutDirection: LayoutDirection
@@ -50,7 +50,7 @@ final class MarkdownFormatter {
         switch presentationKind {
         case .blockQuote:
             return AttributeContainer()
-                .foregroundColor(Color(colors.subtitleText))
+                .foregroundColor(Color(colors.text))
         case .codeBlock:
             return AttributeContainer()
                 .font(fonts.body.monospaced())

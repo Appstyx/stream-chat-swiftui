@@ -138,13 +138,25 @@ open class WaveformView: UIView {
     }
 }
 
-struct WaveformViewSwiftUI: UIViewRepresentable {
+public struct WaveformViewSwiftUI: UIViewRepresentable {
     var audioContext: AudioPlaybackContext?
     var addedVoiceRecording: AddedVoiceRecording
     var onSliderChanged: (TimeInterval) -> Void
     var onSliderTapped: () -> Void
     
-    func makeUIView(context: Context) -> WaveformView {
+    public init(
+        audioContext: AudioPlaybackContext? = nil,
+        addedVoiceRecording: AddedVoiceRecording,
+        onSliderChanged: @escaping (TimeInterval) -> Void,
+        onSliderTapped: @escaping () -> Void
+    ) {
+        self.audioContext = audioContext
+        self.addedVoiceRecording = addedVoiceRecording
+        self.onSliderChanged = onSliderChanged
+        self.onSliderTapped = onSliderTapped
+    }
+    
+    public func makeUIView(context: Context) -> WaveformView {
         let view = WaveformView()
         view.onSliderTapped = onSliderTapped
         view.onSliderChanged = onSliderChanged
@@ -152,7 +164,7 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ uiView: WaveformView, context: Context) {
+    public func updateUIView(_ uiView: WaveformView, context: Context) {
         updateContent(for: uiView)
     }
     

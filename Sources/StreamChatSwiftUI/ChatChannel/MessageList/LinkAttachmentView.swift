@@ -14,6 +14,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
     var message: ChatMessage
     var width: CGFloat
     var isFirst: Bool
+    var isLastInThread: Bool
     @Binding var scrolledId: String?
 
     private let padding: CGFloat = 8
@@ -23,12 +24,14 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
         message: ChatMessage,
         width: CGFloat,
         isFirst: Bool,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) {
         self.factory = factory
         self.message = message
         self.width = width
         self.isFirst = isFirst
+        self.isLastInThread = isLastInThread
         _scrolledId = scrolledId
     }
 
@@ -37,6 +40,13 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
+            factory.makeViewBeforeMessageView(
+                message: message,
+                isFirst: isFirst,
+                component: "link",
+                isLastInThread: isLastInThread
+            )
+            
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,

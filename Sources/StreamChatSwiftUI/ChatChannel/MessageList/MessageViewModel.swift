@@ -10,8 +10,8 @@ open class MessageViewModel: ObservableObject {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 
-    @Published public internal(set) var message: ChatMessage
-    @Published public internal(set) var channel: ChatChannel?
+    @Published public var message: ChatMessage
+    @Published public var channel: ChatChannel?
     private var cancellables = Set<AnyCancellable>()
 
     public init(
@@ -86,7 +86,7 @@ open class MessageViewModel: ObservableObject {
     }
 
     open var isSwipeToQuoteReplyPossible: Bool {
-        message.isInteractionEnabled && channel?.config.repliesEnabled == true
+        message.isInteractionEnabled
     }
 
     open var textContent: String {

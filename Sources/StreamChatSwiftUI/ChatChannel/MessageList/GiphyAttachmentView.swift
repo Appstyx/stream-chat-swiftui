@@ -17,12 +17,20 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
     let width: CGFloat
     let isFirst: Bool
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
 
     public var body: some View {
         VStack(
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
+            factory.makeViewBeforeMessageView(
+                message: message,
+                isFirst: isFirst,
+                component: "gif",
+                isLastInThread : isLastInThread
+            )
+            
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
@@ -96,11 +104,16 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
     }
 }
 
-struct LazyGiphyView: View {
+public struct LazyGiphyView: View {
     let source: URL
     let width: CGFloat
+    
+    public init(source: URL, width: CGFloat) {
+        self.source = source
+        self.width = width
+    }
 
-    var body: some View {
+    public var body: some View {
         LazyImage(imageURL: source) { state in
             if let imageContainer = state.imageContainer {
                 NukeImage(imageContainer)
@@ -117,5 +130,38 @@ struct LazyGiphyView: View {
         .processors([ImageProcessors.Resize(width: width)])
         .priority(.high)
         .aspectRatio(contentMode: .fit)
+    }
+}
+
+public struct LazyGifViewAdaptive: View {
+    let source: URL
+
+    public init(source: URL) {
+        self.source = source
+    }
+
+    public var body: some View {
+        LazyImage(url: source) { state in
+            if let container = state.imageContainer {
+                let uiImage = container.image
+                let ratio = uiImage.size.width / uiImage.size.height
+
+                NukeImage(container)
+                    .aspectRatio(ratio, contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+            } else if state.error != nil {
+                Color(.secondarySystemBackground)
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+            } else {
+                ZStack {
+                    Color(.secondarySystemBackground)
+                    ProgressView()
+                }
+                .aspectRatio(1, contentMode: .fit)
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .onDisappear(.cancel)
     }
 }
