@@ -232,7 +232,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             message: messageDisplayInfo.message,
             contentWidth: messageDisplayInfo.contentWidth,
             isFirst: messageDisplayInfo.isFirst,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            isLastInThread: true
         )
         // This is needed for the LinkDetectionTextView to work properly.
         // TODO: This should be refactored on v5 so the TextView does not depend directly on the view model.

@@ -16,13 +16,15 @@ public struct MessageView<Factory: ViewFactory>: View {
     public var message: ChatMessage
     public var contentWidth: CGFloat
     public var isFirst: Bool
+    public var isLastInThread: Bool
     @Binding public var scrolledId: String?
 
-    public init(factory: Factory, message: ChatMessage, contentWidth: CGFloat, isFirst: Bool, scrolledId: Binding<String?>) {
+    public init(factory: Factory, message: ChatMessage, contentWidth: CGFloat, isFirst: Bool, scrolledId: Binding<String?>, isLastInThread: Bool) {
         self.factory = factory
         self.message = message
         self.contentWidth = contentWidth
         self.isFirst = isFirst
+        self.isLastInThread = isLastInThread
         _scrolledId = scrolledId
     }
 
@@ -39,7 +41,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                     for: message,
                     isFirst: isFirst,
                     availableWidth: contentWidth,
-                    scrolledId: $scrolledId
+                    scrolledId: $scrolledId,
+                    isLastInThread: isLastInThread
                 )
             } else if let poll = message.poll {
                 factory.makePollView(message: message, poll: poll, isFirst: isFirst)
@@ -50,7 +53,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                         for: message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                 }
 
@@ -59,7 +63,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                         for: message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                 }
 
@@ -68,7 +73,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                         for: message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                 }
 
@@ -77,7 +83,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                         for: message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                 }
 
@@ -87,7 +94,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                         for: message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                 }
                 
@@ -96,7 +104,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                         for: message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                 }
             } else {
@@ -104,14 +113,16 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeEmojiTextView(
                         message: message,
                         scrolledId: $scrolledId,
-                        isFirst: isFirst
+                        isFirst: isFirst,
+                        isLastInThread: isLastInThread
                     )
                 } else if !message.text.isEmpty {
                     factory.makeMessageTextView(
                         for: message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                 }
             }
@@ -132,6 +143,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     private let topPadding: CGFloat
     private let bottomPadding: CGFloat
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
 
     public init(
         factory: Factory,
@@ -141,11 +153,13 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         trailingPadding: CGFloat = 16,
         topPadding: CGFloat = 8,
         bottomPadding: CGFloat = 8,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool = false
     ) {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
+        self.isLastInThread = isLastInThread
         self.leadingPadding = leadingPadding
         self.trailingPadding = trailingPadding
         self.topPadding = topPadding
@@ -158,6 +172,13 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
+            factory.makeViewBeforeMessageView(
+                message: message,
+                isFirst: isFirst,
+                component: "message",
+                isLastInThread: isLastInThread
+            )
+            
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,
@@ -191,6 +212,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
     var message: ChatMessage
     @Binding var scrolledId: String?
     var isFirst: Bool
+    var isLastInThread: Bool
 
     @Injected(\.fonts) private var fonts
 
@@ -198,6 +220,13 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
         ZStack {
             if let quotedMessage = message.quotedMessage {
                 VStack(spacing: 0) {
+                    factory.makeViewBeforeMessageView(
+                        message: message,
+                        isFirst: isFirst,
+                        component: "emoji",
+                        isLastInThread: isLastInThread
+                    )
+                    
                     factory.makeQuotedMessageView(
                         quotedMessage: quotedMessage,
                         fillAvailableSpace: !message.attachmentCounts.isEmpty,

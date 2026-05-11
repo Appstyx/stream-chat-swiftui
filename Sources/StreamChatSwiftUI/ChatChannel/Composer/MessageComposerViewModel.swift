@@ -101,6 +101,19 @@ open class MessageComposerViewModel: ObservableObject {
             if shouldDeleteDraftMessage(oldValue: oldValue) {
                 deleteDraftMessage()
             }
+            
+            onAddVoiceRecording()
+        }
+    }
+    
+    /// Flag to enable automatic sending of voice recordings when added.
+    public var shouldAutoSendVoiceRecord: Bool = true
+
+    open func onAddVoiceRecording() {
+        if shouldAutoSendVoiceRecord, !addedVoiceRecordings.isEmpty {
+            sendMessage(quotedMessage: quotedMessage?.wrappedValue, editedMessage: nil) {
+                self.quotedMessage = nil
+            }
         }
     }
 
@@ -113,6 +126,8 @@ open class MessageComposerViewModel: ObservableObject {
             }
         }
     }
+    
+    @Published public var canCloseAttachmentView: Bool = true
     
     @Published public var pickerTypeState: PickerTypeState = .expanded(.none) {
         didSet {

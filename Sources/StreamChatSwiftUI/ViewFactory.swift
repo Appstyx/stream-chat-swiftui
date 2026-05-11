@@ -19,7 +19,7 @@ public protocol ViewFactory: AnyObject {
     associatedtype HeaderViewModifier: ChannelListHeaderViewModifier
     /// Creates the channel list header view modifier.
     ///  - Parameter title: the title displayed in the header.
-    func makeChannelListHeaderViewModifier(title: String) -> HeaderViewModifier
+    func makeChannelListHeaderViewModifier(title: String, searchText: Binding<String>) -> HeaderViewModifier
 
     associatedtype NoChannels: View
     /// Creates the view that is displayed when there are no channels available.
@@ -192,6 +192,25 @@ public protocol ViewFactory: AnyObject {
         onSearchResultTap: @escaping (ChannelSelectionInfo) -> Void,
         onItemAppear: @escaping (Int) -> Void
     ) -> ChannelListSearchResultsViewType
+    
+    associatedtype ChannelListViewType: View
+    func makeChannelList(
+        channels: LazyCachedMapCollection<ChatChannel>,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        swipedChannelId: Binding<String?>,
+        scrolledChannelId: Binding<String?>,
+        onlineIndicatorShown: ((ChatChannel) -> Bool)?,
+        imageLoader: ((ChatChannel) -> UIImage)?,
+        onItemTap: @escaping (ChatChannel) -> Void,
+        onItemAppear: @escaping (Int) -> Void,
+        channelNaming: ((ChatChannel) -> String)?,
+        trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void,
+        onRefreshable: @escaping () async -> Void,
+        preselectChannelIfNeeded: @escaping () -> Void,
+        scrollToTopSignal: Int
+    ) -> ChannelListViewType
 
     associatedtype ChannelListSearchResultItem: View
     /// Creates the search result item in the channel list.
@@ -329,7 +348,8 @@ public protocol ViewFactory: AnyObject {
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        isLast: Bool
+        isLast: Bool,
+        isLastInThread: Bool
     ) -> MessageContainerViewType
 
     associatedtype MessageTextViewType: View
@@ -344,7 +364,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> MessageTextViewType
 
     associatedtype MessageDateViewType: View
@@ -352,6 +373,12 @@ public protocol ViewFactory: AnyObject {
     /// - Parameter message: the chat message for which the date info is displayed.
     /// - Returns: view shown in the date indicator slot.
     func makeMessageDateView(for message: ChatMessage) -> MessageDateViewType
+    
+    associatedtype MessageZapCountType: View
+    /// Creates a view for the date info shown below a message.
+    /// - Parameter message: the chat message for which the date info is displayed.
+    /// - Returns: view shown in the date indicator slot.
+    func makeMessageZapCount(for message: ChatMessage) -> MessageZapCountType
 
     associatedtype MessageAuthorAndDateViewType: View
     /// Creates a view for the date and author info shown below a message.
@@ -386,7 +413,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> ImageAttachmentViewType
 
     associatedtype GiphyAttachmentViewType: View
@@ -401,7 +429,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> GiphyAttachmentViewType
 
     associatedtype LinkAttachmentViewType: View
@@ -416,7 +445,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> LinkAttachmentViewType
 
     associatedtype FileAttachmentViewType: View
@@ -431,7 +461,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> FileAttachmentViewType
 
     associatedtype VideoAttachmentViewType: View
@@ -446,7 +477,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> VideoAttachmentViewType
     
     associatedtype GalleryViewType: View
@@ -544,7 +576,8 @@ public protocol ViewFactory: AnyObject {
     func makeEmojiTextView(
         message: ChatMessage,
         scrolledId: Binding<String?>,
-        isFirst: Bool
+        isFirst: Bool,
+        isLastInThread: Bool
     ) -> EmojiTextViewType
     
     associatedtype VoiceRecordingViewType: View
@@ -559,7 +592,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> VoiceRecordingViewType
 
     associatedtype CustomAttachmentViewType: View
@@ -574,7 +608,8 @@ public protocol ViewFactory: AnyObject {
         for message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) -> CustomAttachmentViewType
 
     associatedtype ScrollToBottomButtonType: View
@@ -957,6 +992,15 @@ public protocol ViewFactory: AnyObject {
         onTapGesture: @escaping () -> Void,
         onLongPressGesture: @escaping () -> Void
     ) -> MessageReactionViewType
+    
+    associatedtype ViewBeforeMessageView: View
+    /// Cutsom view OPA
+    func makeViewBeforeMessageView(
+        message: ChatMessage,
+        isFirst: Bool,
+        component: String,
+        isLastInThread: Bool
+    ) -> ViewBeforeMessageView
 
     associatedtype ReactionsOverlayViewType: View
     /// Creates the reactions overlay view.

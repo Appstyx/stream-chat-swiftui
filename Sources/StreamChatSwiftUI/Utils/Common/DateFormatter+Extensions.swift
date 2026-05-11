@@ -21,6 +21,27 @@ extension DateFormatter {
         df.locale = .autoupdatingCurrent
         return df
     }()
+    
+    /// Formats the date for the message list overlay.
+    /// Shows the year only if the date is from a previous year.
+    public static func dateToStringFormatted(from date: Date) -> String {
+        let calendar = Calendar.autoupdatingCurrent
+        let now = Date()
+
+        let formatter = DateFormatter()
+        formatter.locale = .autoupdatingCurrent
+
+        let dateYear = calendar.component(.year, from: date)
+        let currentYear = calendar.component(.year, from: now)
+
+        if dateYear < currentYear {
+            formatter.setLocalizedDateFormatFromTemplate("MMM d, yyyy")
+        } else {
+            formatter.setLocalizedDateFormatFromTemplate("MMM d")
+        }
+
+        return formatter.string(from: date)
+    }
 }
 
 extension DateComponentsFormatter {

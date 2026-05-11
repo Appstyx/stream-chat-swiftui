@@ -142,7 +142,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 return Alert.defaultErrorAlert
             }
         }
-        .modifier(viewFactory.makeChannelListHeaderViewModifier(title: title))
+        .modifier(viewFactory.makeChannelListHeaderViewModifier(title: title, searchText: $viewModel.searchText))
         .navigationBarTitleDisplayMode(viewFactory.navigationBarDisplayMode())
         .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
     }
@@ -228,8 +228,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     onItemAppear: viewModel.loadAdditionalSearchResults(index:)
                 )
             } else {
-                ChannelList(
-                    factory: viewFactory,
+                viewFactory.makeChannelList(
                     channels: viewModel.channels,
                     selectedChannel: $viewModel.selectedChannel,
                     swipedChannelId: $viewModel.swipedChannelId,
@@ -242,14 +241,19 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkForChannels(index: index)
                     },
                     channelNaming: viewModel.name(forChannel:),
-                    channelDestination: viewFactory.makeChannelDestination(),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
-                    leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
+                    leadingSwipeButtonTapped: { _ in /* No leading button by default. */ },
+                    onRefreshable: {
+                        Task {
+                            await viewModel.setupChannelListController()
+                        }
+                    },
+                    preselectChannelIfNeeded: {
+                        viewModel.preselectChannelIfNeeded()
+                    },
+                    scrollToTopSignal: viewModel.scrollToTopSignal
                 )
-                .onAppear {
-                    viewModel.preselectChannelIfNeeded()
-                }
             }
 
             viewFactory.makeChannelListStickyFooterView()

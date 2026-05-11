@@ -14,6 +14,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
     var message: ChatMessage
     var width: CGFloat
     var isFirst: Bool
+    var isLastInThread: Bool
     var onImageTap: ((ChatMessageLinkAttachment) -> Void)?
     @Binding var scrolledId: String?
 
@@ -25,12 +26,14 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
         width: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>,
+        isLastInThread: Bool,
         onImageTap: ((ChatMessageLinkAttachment) -> Void)? = nil
     ) {
         self.factory = factory
         self.message = message
         self.width = width
         self.isFirst = isFirst
+        self.isLastInThread = isLastInThread
         self.onImageTap = onImageTap
         _scrolledId = scrolledId
     }
@@ -40,6 +43,13 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
+            factory.makeViewBeforeMessageView(
+                message: message,
+                isFirst: isFirst,
+                component: "link",
+                isLastInThread: isLastInThread
+            )
+            
             if let quotedMessage = message.quotedMessage {
                 factory.makeQuotedMessageView(
                     quotedMessage: quotedMessage,

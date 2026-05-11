@@ -24,9 +24,12 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     var showsAllInfo: Bool
     var isInThread: Bool
     var isLast: Bool
+    var isLastInThread: Bool
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
+    var onShortPress: (MessageDisplayInfo) -> Void
+    var onDoublePress: (MessageDisplayInfo) -> Void
 
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
@@ -54,7 +57,10 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping (MessageDisplayInfo) -> Void,
-        viewModel: MessageViewModel? = nil
+        viewModel: MessageViewModel? = nil,
+        isLastInThread: Bool = false,
+        onShortPress: @escaping (MessageDisplayInfo) -> Void,
+        onDoublePress: @escaping (MessageDisplayInfo) -> Void,
     ) {
         self.factory = factory
         self.channel = channel
@@ -64,6 +70,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
+        self.onShortPress = onShortPress
+        self.onDoublePress = onDoublePress
+        self.isLastInThread = isLastInThread
         _messageViewModel = .init(
             wrappedValue: viewModel ?? MessageViewModel(
                 message: message,
@@ -105,7 +114,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         message: message,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        isLastInThread: isLastInThread
                     )
                     .overlay(
                         ZStack {
@@ -131,7 +141,11 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 })
                         }
                     )
+                    .onTapGesture {
+                        handleTapMessage()
+                    }
                     .onTapGesture(count: 2) {
+                        handleDoubleTapMessage()
                         if messageListConfig.doubleTapOverlayEnabled {
                             handleGestureForMessage(showsMessageActions: true)
                         }
@@ -247,6 +261,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                     if showsAllInfo && !message.isDeleted {
                         if message.isSentByCurrentUser && channel.config.readEventsEnabled {
                             HStack(spacing: 4) {
+                                factory.makeMessageZapCount(for: message)
+                                
                                 factory.makeMessageReadIndicatorView(
                                     channel: channel,
                                     message: message
@@ -257,10 +273,22 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                                 }
                             }
                         } else if messageViewModel.authorAndDateShown {
-                            factory.makeMessageAuthorAndDateView(for: message)
+                            HStack(spacing: 4) {
+                                factory.makeMessageAuthorAndDateView(for: message)
+                                
+                                factory.makeMessageZapCount(for: message)
+                            }
                         } else if messageViewModel.messageDateShown {
-                            factory.makeMessageDateView(for: message)
+                            HStack(spacing: 4) {
+                                factory.makeMessageDateView(for: message)
+                                
+                                factory.makeMessageZapCount(for: message)
+                            }
                         }
+                    }
+                    
+                    if !showsAllInfo && !message.isDeleted {
+                        factory.makeMessageZapCount(for: message)
                     }
                 }
                 .overlay(
@@ -382,6 +410,32 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         withAnimation(.interpolatingSpring(stiffness: 170, damping: 20)) {
             self.offsetX = value
         }
+    }
+    
+    func handleDoubleTapMessage() {
+        onDoublePress(
+            MessageDisplayInfo(
+                message: message,
+                frame: frame,
+                contentWidth: contentWidth,
+                isFirst: showsAllInfo,
+                showsMessageActions: false,
+                showsBottomContainer: false
+            )
+        )
+    }
+    
+    func handleTapMessage() {
+        onShortPress(
+            MessageDisplayInfo(
+                message: message,
+                frame: frame,
+                contentWidth: contentWidth,
+                isFirst: showsAllInfo,
+                showsMessageActions: false,
+                showsBottomContainer: false
+            )
+        )
     }
 
     func handleGestureForMessage(

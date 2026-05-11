@@ -25,6 +25,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var trailingSwipeRightButtonTapped: (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: (ChatChannel) -> Void
+    private var onRefreshable: () async -> Void
 
     public init(
         factory: Factory,
@@ -41,7 +42,8 @@ public struct ChannelList<Factory: ViewFactory>: View {
         channelDestination: @escaping (ChannelSelectionInfo) -> Factory.ChannelDestination,
         trailingSwipeRightButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
         trailingSwipeLeftButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
-        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void = { _ in }
+        leadingSwipeButtonTapped: @escaping (ChatChannel) -> Void = { _ in },
+        onRefreshable: @escaping () async -> Void
     ) {
         self.factory = factory
         self.channels = channels
@@ -71,6 +73,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
         self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
         self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
+        self.onRefreshable = onRefreshable
         self.scrollable = scrollable
         _selectedChannel = selectedChannel
         _swipedChannelId = swipedChannelId
@@ -81,13 +84,29 @@ public struct ChannelList<Factory: ViewFactory>: View {
         Group {
             if scrollable {
                 ScrollViewReader { scrollView in
-                    ScrollView {
-                        channelsVStack
-                    }
-                    .onChange(of: scrolledChannelId) { newValue in
-                        if let newValue {
-                            withAnimation {
-                                scrollView.scrollTo(newValue, anchor: .bottom)
+                    if #available(iOS 15.0, *) {
+                        ScrollView {
+                            channelsVStack
+                        }
+                        .refreshable {
+                            await self.onRefreshable()
+                        }
+                        .onChange(of: scrolledChannelId) { newValue in
+                            if let newValue {
+                                withAnimation {
+                                    scrollView.scrollTo(newValue, anchor: .bottom)
+                                }
+                            }
+                        }
+                    } else {
+                        ScrollView {
+                            channelsVStack
+                        }
+                        .onChange(of: scrolledChannelId) { newValue in
+                            if let newValue {
+                                withAnimation {
+                                    scrollView.scrollTo(newValue, anchor: .bottom)
+                                }
                             }
                         }
                     }
@@ -168,6 +187,9 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
     public var body: some View {
         LazyVStack(spacing: 0) {
+            EmptyView()
+                .id("ChatChannelListTop")
+            
             ForEach(channels) { channel in
                 factory.makeChannelListItem(
                     channel: channel,

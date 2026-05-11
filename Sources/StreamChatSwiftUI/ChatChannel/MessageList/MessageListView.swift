@@ -189,7 +189,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 scrolledId: $scrolledId,
                                 quotedMessage: $quotedMessage,
                                 onLongPress: handleLongPress(messageDisplayInfo:),
-                                isLast: !showsLastInGroupInfo && message == messages.last
+                                isLast: !showsLastInGroupInfo && message == messages.last,
+                                isLastInThread: isLastInThread(for: message),
                             )
                             .environment(\.channelTranslationLanguage, channel.membership?.language)
                             .onAppear {
@@ -399,6 +400,14 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         let groupInfo = messagesGroupingInfo[message.id] ?? []
         return groupInfo.contains(firstMessageKey) == true
     }
+    
+    private func isLastInThread(for message: ChatMessage) -> Bool {
+        if !messageListConfig.groupMessages {
+            return true
+        }
+        let groupInfo = messagesGroupingInfo[message.id] ?? []
+        return groupInfo.contains(lastMessageKey) == true
+    }
 
     private func showsLastInGroupInfo(
         for message: ChatMessage,
@@ -567,7 +576,7 @@ public struct DateIndicatorView: View {
     var dateString: String
 
     public init(date: Date) {
-        dateString = DateFormatter.messageListDateOverlay.string(from: date)
+        dateString = DateFormatter.dateToStringFormatted(from: date)
     }
 
     public init(dateString: String) {
@@ -662,8 +671,8 @@ private struct MessageViewModelKey: EnvironmentKey {
     static let defaultValue: MessageViewModel? = nil
 }
 
-extension EnvironmentValues {
-    var channelTranslationLanguage: TranslationLanguage? {
+public extension EnvironmentValues {
+    public var channelTranslationLanguage: TranslationLanguage? {
         get {
             self[ChannelTranslationLanguageKey.self]
         }

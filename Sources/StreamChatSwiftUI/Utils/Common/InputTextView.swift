@@ -4,22 +4,22 @@
 
 import UIKit
 
-enum TextSizeConstants {
+public struct TextSizeConstants {
     static let composerConfig = InjectedValues[\.utils].composerConfig
-    static let defaultInputViewHeight: CGFloat = 38.0
-    static var minimumHeight: CGFloat {
+    public static let defaultInputViewHeight: CGFloat = 38.0
+    public static var minimumHeight: CGFloat {
         composerConfig.inputViewMinHeight
     }
 
-    static var maximumHeight: CGFloat {
+    public static var maximumHeight: CGFloat {
         composerConfig.inputViewMaxHeight
     }
 
-    static var minThreshold: CGFloat {
+    public static var minThreshold: CGFloat {
         composerConfig.inputViewMinHeight
     }
 
-    static var cornerRadius: CGFloat {
+    public static var cornerRadius: CGFloat {
         composerConfig.inputViewCornerRadius
     }
 }

@@ -292,13 +292,18 @@ public struct QuotedMessageContentView<Factory: ViewFactory>: View {
     }
 }
 
-struct VoiceRecordingPreview: View {
+public struct VoiceRecordingPreview: View {
+    
     @Injected(\.images) var images
     @Injected(\.utils) var utils
     
     let voiceAttachment: VoiceRecordingAttachmentPayload
     
-    var body: some View {
+    public init(voiceAttachment: VoiceRecordingAttachmentPayload) {
+        self.voiceAttachment = voiceAttachment
+    }
+    
+    public var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text(

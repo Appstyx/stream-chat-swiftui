@@ -12,36 +12,51 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     let width: CGFloat
     let isFirst: Bool
     @Binding var scrolledId: String?
+    let isLastInThread: Bool
 
     public init(
         factory: Factory,
         message: ChatMessage,
         width: CGFloat,
         isFirst: Bool = true,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        isLastInThread: Bool
     ) {
         self.factory = factory
         self.message = message
         self.width = width
         self.isFirst = isFirst
+        self.isLastInThread = isLastInThread
         _scrolledId = scrolledId
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(
+            alignment: message.alignmentInBubble,
+            spacing: 0
+        ) {
             if let quotedMessage = message.quotedMessage {
-                factory.makeQuotedMessageView(
-                    quotedMessage: quotedMessage,
-                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                    isInComposer: false,
-                    scrolledId: $scrolledId
+                factory.makeViewBeforeMessageView(
+                    message: message,
+                    isFirst: false,
+                    component: "video",
+                    isLastInThread: isLastInThread
                 )
 
-                VideoAttachmentsList(
-                    factory: factory,
-                    message: message,
-                    width: width
-                )
+                VStack {
+                    factory.makeQuotedMessageView(
+                        quotedMessage: quotedMessage,
+                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                        isInComposer: false,
+                        scrolledId: $scrolledId
+                    )
+
+                    VideoAttachmentsList(
+                        factory: factory,
+                        message: message,
+                        width: width
+                    )
+                }
             } else {
                 VideoAttachmentsList(
                     factory: factory,
