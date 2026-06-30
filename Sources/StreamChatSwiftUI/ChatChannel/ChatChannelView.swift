@@ -2,6 +2,7 @@
 // Copyright © 2025 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import StreamChat
 import SwiftUI
 
@@ -20,13 +21,15 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var tabBarAvailable: Bool = false
 
     private var factory: Factory
+    private let jumpToMessage: AnyPublisher<String, Never>?
 
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelViewModel? = nil,
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
-        scrollToMessage: ChatMessage? = nil
+        scrollToMessage: ChatMessage? = nil,
+        jumpToMessage: AnyPublisher<String, Never>? = nil
     ) {
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ViewModelsFactory.makeChannelViewModel(
@@ -36,6 +39,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         )
         factory = viewFactory
+        self.jumpToMessage = jumpToMessage
     }
 
     public var body: some View {
@@ -206,6 +210,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
         .modifier(factory.makeBouncedMessageActionsModifier(viewModel: viewModel))
+        .onReceive(jumpToMessage ?? Empty<String, Never>().eraseToAnyPublisher()) { messageId in
+            viewModel.jumpToMessage(messageId: messageId)
+        }
     }
 
     private var generatingSnapshot: Bool {
