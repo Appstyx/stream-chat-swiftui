@@ -96,6 +96,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
 
                     Divider()
+                        .opacity(0)
                         .navigationBarBackButtonHidden(viewModel.reactionsShown)
                         .if(viewModel.reactionsShown, transform: { view in
                             view.modifier(factory.makeChannelBarsVisibilityViewModifier(shouldShow: false))
