@@ -26,10 +26,10 @@ struct ScrollViewOffsetPreferenceKey: PreferenceKey {
     }
 }
 
-struct WidthPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
+public struct WidthPreferenceKey: PreferenceKey {
+    public static var defaultValue: CGFloat? = nil
 
-    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+    public static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         value = nextValue() ?? value
     }
 }
