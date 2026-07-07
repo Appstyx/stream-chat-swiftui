@@ -502,9 +502,9 @@ extension ChatMessage {
 public struct MediaAttachment {
     @Injected(\.utils) var utils
     
-    let url: URL
-    let type: MediaAttachmentType
-    var uploadingState: AttachmentUploadingState?
+    public let url: URL
+    public let type: MediaAttachmentType
+    public var uploadingState: AttachmentUploadingState?
     
     public init(
         url: URL,
